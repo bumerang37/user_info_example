@@ -82,3 +82,29 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+.profile-photo {
+    max-width: 150px;
+}
+
+.required label:after, label.required:after {
+    content: "*";
+    color: red;
+}
+
+
+#fileUpload > .help-block {
+    border: 1px solid red;
+    width: 350px;
+    margin-left: -147px;
+    margin-top: 41px;
+    font-size: 12px;
+}
+
+.invalid-feedback {
+    margin-top: 40px;
+}
+
+#fileUpload {
+    padding: 20px;
+}
