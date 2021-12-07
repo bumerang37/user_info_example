@@ -13,6 +13,7 @@ $config = [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'language' => 'ru',
+    'name'=>'user-info-example_openserver',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -41,7 +42,7 @@ $config = [
                     'rootTag' => 'Users',
                     'contentType' => 'multipart/form-data',
                     'class' => '\yii\web\XmlResponseFormatter',
-                ]
+                ],
             ],
         ],
         'request' => [
