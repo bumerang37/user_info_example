@@ -36,23 +36,6 @@ AppAsset::register($this);
         ],
     ]);
 
-//    TODO:: Сделать более дружелюбным профиль, добавить лого
-    $user_profile = <<<HTML
-<li>
-<div class="dropdown text-end">
-          <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle show" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="true">
-            <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
-          </a>
-          <ul class="dropdown-menu text-small show" aria-labelledby="dropdownUser1" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(0px, 34px);" data-popper-placement="bottom-start">
-            <li><a class="dropdown-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item" href="#">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Sign out</a></li>
-          </ul>
-        </div>
-</li>
-HTML;
-
     if (!Yii::$app->user->isGuest) {
         $items[]=['label' => 'Настройки', 'url' => ['/settings']];
 }
@@ -93,6 +76,7 @@ HTML;
     }
     NavBar::end();
     ?>
+</header>
 
     <main role="main" class="flex-shrink-0">
         <div class="container">

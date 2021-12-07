@@ -57,12 +57,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="col-md-6">
                         <?= $form->field($model, 'patronymic',[
                             "template" => "<label class='labels'>Отчество</label>\n{input}\n{hint}\n{error}"
-                        ])->textInput(['autofocus' => true,'class' => 'form-control','placeholder' => 'Отчество']) ?>
+                        ])->textInput(['class' => 'form-control','placeholder' => 'Отчество']) ?>
                     </div>
                     <div class="col-md-12">
                         <?= $form->field($model, 'last_name',[
                             "template" => "<label class='labels'>Фамилия</label>\n{input}\n{hint}\n{error}"
-                        ])->textInput(['autofocus' => true,'class' => 'form-control','placeholder' => 'Фамилия']) ?>
+                        ])->textInput(['class' => 'form-control','placeholder' => 'Фамилия']) ?>
                     </div>
                     <div class="col-md-12">
                         <?php echo DatePicker::widget([
@@ -84,12 +84,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="col-md-12">
                         <?= $form->field($model, 'email',[
                             "template" => "<label class='labels'>Email</label>\n{input}\n{hint}\n{error}"
-                        ])->textInput(['autofocus' => true,'class' => 'form-control','placeholder' => 'Введите email']) ?>
+                        ])->textInput(['class' => 'form-control','placeholder' => 'Введите email']) ?>
                     </div>
                     <div class="col-md-12">
                         <?= $form->field($model, 'city',[
                             "template" => "<label class='labels'>Город</label>\n{input}\n{hint}\n{error}"
-                        ])->textInput(['autofocus' => true,'class' => 'form-control','placeholder' => 'Введите название города проживания']) ?>
+                        ])->textInput(['class' => 'form-control','placeholder' => 'Введите название города проживания']) ?>
                     </div>
                 </div>
                 <div class="mt-5 text-center">
@@ -113,11 +113,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div><br>
                 <div class="col-md-12"><?= $form->field($model, 'username',[
                         "template" => "<label class='labels'>Логин</label>\n{input}\n{hint}\n{error}"
-                    ])->textInput(['autofocus' => true,'class' => 'form-control','placeholder' => 'Имя пользователя']) ?></div> <br>
+                    ])->textInput(['class' => 'form-control','placeholder' => 'Имя пользователя']) ?></div> <br>
 
                 <div class="col-md-12"><?= $form->field($model, 'password',[
                         "template" => "<label class='labels'>Пароль</label>\n{input}\n{hint}\n{error}"
-                    ])->passwordInput(['autofocus' => true,'class' => 'form-control','placeholder' => 'Изменить пароль']) ?></div>
+                    ])->passwordInput(['class' => 'form-control','placeholder' => 'Изменить пароль']) ?></div>
             </div>
         </div>
     </div>
