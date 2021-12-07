@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eb57db2e6be27f2b90f15b6864a5f51b",
+    "content-hash": "06164839f0b70a845fc18a9bb52c3c98",
     "packages": [
         {
             "name": "bower-asset/font-awesome",
@@ -6356,7 +6356,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.6.0"
+        "php": ">=5.6.0",
+        "ext-simplexml": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.1.0"

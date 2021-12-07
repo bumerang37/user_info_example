@@ -1,5 +1,6 @@
 <?php
 
+use app\models\User;
 use yii\bootstrap4\Html;;
 use yii\bootstrap4\ActiveForm;
 use yii\widgets\DetailView;
@@ -41,15 +42,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'auth_key',
             'password_reset_token',
             'email:email',
-//            [
-//                    'attribute' => 'status',
-////                    'format' => 'boolean',
-//                    'value' => function($model) {
-//                        return ($model->status == 1) ? 'Активный' : "Неактивный";
-//                    }
+            [
+                    'attribute' => 'status',
+//                    'format' => 'boolean',
+                    'value' => function($model) {
+                      return User::getStatusList()[$model->status];
+                    },
 //
-//            ],
-        'status:boolean',
+            ],
+
             'created_at',
             'updated_at',
         ],

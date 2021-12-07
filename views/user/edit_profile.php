@@ -13,7 +13,7 @@ $this->title = 'Настройки профиля';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php $form = ActiveForm::begin(['id' => 'form-edit','options' => ['enctype' => 'multipart/form-data']]); ?>
-<div class="container rounded bg-white mt-5 mb-5">
+<div class="container rounded bg-white mt-5 mb-5 edit-profile">
     <div class="row">
         <div class="col-md-4 border-right">
             <div class="d-flex flex-column align-items-center text-center p-3 py-5">

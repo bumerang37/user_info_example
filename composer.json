@@ -21,7 +21,11 @@
         "kartik-v/yii2-widget-datepicker": "^1.4",
         "kartik-v/yii2-field-range": "*",
         "bower-asset/font-awesome": "^5.15",
-        "rmrevin/yii2-fontawesome": "~3.5"
+        "rmrevin/yii2-fontawesome": "~3.5",
+        "ext-simplexml": "*",
+        "ext-dom": "*",
+        "ext-xmlreader": "*",
+        "ext-json": "*"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",

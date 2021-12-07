@@ -34,20 +34,32 @@ use yii\web\NotFoundHttpException;
  */
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
+    const SCENARIO_INSERT = 'insert';
+    const SCENARIO_UPDATE = 'update';
+    const SCENARIO_IMPORT = 'import';
+
     const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE_LABEL = 'Неактивен';
+    const STATUS_ACTIVE_LABEL = 'Активный';
+
 
     public static $uploadsPath = "uploads";
 
     const UPLOADS_TYPE_PHOTO = 0;
     const UPLOADS_TYPE_EXPORT = 1;
+    const UPLOADS_TYPE_IMPORT = 2;
     const UPLOADS_PHOTO_NAME = 'photo';
+    const UPLOADS_IMPORT_NAME = 'import';
     const UPLOADS_EXPORT_NAME = 'export';
 
     const UPLOADS_DIRS = [
         self::UPLOADS_TYPE_PHOTO => self::UPLOADS_PHOTO_NAME,
-        self::UPLOADS_TYPE_EXPORT => self::UPLOADS_EXPORT_NAME
+        self::UPLOADS_TYPE_EXPORT => self::UPLOADS_EXPORT_NAME,
+        self::UPLOADS_TYPE_IMPORT => self::UPLOADS_IMPORT_NAME
     ];
+
+
 
         /**
      * {@inheritdoc}
@@ -63,7 +75,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'password', 'email'], 'required'],
+            [['username', 'email'], 'required'],
             [['birthday', 'created_at', 'updated_at'], 'safe'],
             [['status'], 'integer'],
             [['username', 'photo', 'password', 'password_reset_token','verification_token', 'email'], 'string', 'max' => 255],
@@ -74,11 +86,17 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             [['birthday'],'date','format' => 'yyyy-MM-dd'],
             [['username'], 'unique'],
             [['email'], 'unique'],
+            [['status'],'in','range' => array_keys($this->getStatusList())],
+            [['username', 'email'], 'required','on' => self::SCENARIO_IMPORT],
+            [['username', 'email'], 'unique','on' => self::SCENARIO_IMPORT],
+            [['password'], 'string','on' => self::SCENARIO_IMPORT],
+            [['password'], 'default','value' => '11','on' => self::SCENARIO_IMPORT],
+            [['auth_key'],'string','max' => 120],
 
-//            [['password_reset_token','auth_key'],'filter','filter' => 'trim'],
+            [['password_reset_token','verification_token','auth_key'],'default','value' => '', 'on' => self::SCENARIO_IMPORT],
 
             [['password_reset_token','auth_key'], 'unique'],
-            [['password_reset_token','auth_key'],'default',],
+            [['password_reset_token','auth_key'],'default'],
         ];
     }
 
@@ -110,13 +128,35 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
 
     public function behaviors()
     {
-        return [
-            [
-                'class' => TimestampBehavior::class,
-                'value' => new Expression('NOW()'),
-            ],
+        return [[
+            'class' => TimestampBehavior::class,
+            'createdAtAttribute' => 'created_at',
+            'updatedAtAttribute' => 'updated_at',
+            'value' => new Expression('NOW()'),
+            ]
         ];
     }
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_IMPORT] = [
+            'username','email','patronymic','first_name','last_name',
+            'password_reset_token','verification_token','auth_key','birthday',
+            'city','status','created_at','updated_at','photo'
+        ];
+        return $scenarios;
+    }
+
+//    public function beforeSave($insert)
+//    {
+//        if ($this->scenario === 'insert') {
+//            $this->created_at = new Expression('NOW()');
+//        } elseif ($this->scenario === 'update') {
+//            $this->update_at = new Expression('NOW()');
+//        }
+//    }
+
 
     /**
      * {@inheritdoc}
@@ -133,6 +173,21 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public static function findIdentity($id)
     {
         return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+    }
+
+    public static function getStatusList()
+    {
+        return [
+            self::STATUS_INACTIVE  => self::STATUS_INACTIVE_LABEL,
+            self::STATUS_ACTIVE  => self::STATUS_ACTIVE_LABEL,
+        ];
+    }
+
+    public function getStatus()
+    {
+        $data = $this::getStatusList();
+
+        return isset($data[$this->status]) ?: $data[$this->status];
     }
 
     /**
@@ -266,6 +321,12 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return $url;
     }
 
+    public static function isPhotoExistByUserId($user_id) {
+        $user = self::findOne($user_id);
+        $photo = $user->photo;
+        return is_file(Yii::$app->basePath . DIRECTORY_SEPARATOR.'web'.DIRECTORY_SEPARATOR.self::$uploadsPath.DIRECTORY_SEPARATOR.self::getUploadsFolderByType(USER::UPLOADS_TYPE_PHOTO).'/'.$photo);
+    }
+
     public static function removeProfilePhoto($id) {
         $user = User::findOne($id);
         $photo = $user->photo;
@@ -308,6 +369,34 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return static::findOne([
             'password_reset_token' => $token,
             'status' => self::STATUS_ACTIVE,
+        ]);
+    }
+
+    /**
+     * Finds user by username reset token
+     *
+     * @param string $token password reset token
+     * @return static|null
+     */
+    public static function findByUsername($username)
+    {
+
+        return static::findOne([
+            'username' => $username,
+//            'status' => self::STATUS_ACTIVE,
+        ]);
+    }
+
+    /**
+     * Finds user by username reset token
+     *
+     * @param string $token password reset token
+     * @return static|null
+     */
+    public static function findByEmail($email)
+    {
+        return static::findOne([
+            'email' => $email,
         ]);
     }
 

@@ -7,11 +7,17 @@ use app\models\RegisterForm;
 use app\models\UploadForm;
 use app\models\User;
 use app\models\UserSearch;
+use app\models\XmlImportForm;
+use DOMDocument;
+use SimpleXMLElement;
+use XMLReader;
 use Yii;
+use yii\base\Model;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 /**
@@ -55,11 +61,19 @@ class UserController extends Controller
     public function actionIndex()
     {
         $searchModel = new UserSearch();
+
+//        if ($this->request->isPost) {
+            $model = new XmlImportForm();
+        if ($model->load($this->request->post()) ) {}
+//        }
+
+
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'model' => $model,
         ]);
     }
 
@@ -187,7 +201,7 @@ class UserController extends Controller
         $user = User::findOne($id);
         $photo = $user->photo;
 
-        if (!empty($photo)) {
+        if (!empty($photo) && User::isPhotoExistByUserId($id)) {
             unlink(Yii::$app->basePath . DIRECTORY_SEPARATOR.'web'.DIRECTORY_SEPARATOR.User::$uploadsPath.DIRECTORY_SEPARATOR.User::getUploadsFolderByType(USER::UPLOADS_TYPE_PHOTO).'/'.$photo);
         }
         $this->findModel($id)->delete();
@@ -248,7 +262,110 @@ class UserController extends Controller
         ]);
     }
 
+    public function actionXml()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_XML;
+        header('Content-Type: text/xml; charset-utf-8');
+        $filename =date('d_m_y_H_i_s');
+        Yii::$app->response->headers->set('Content-Disposition', 'attachment; filename="'.$filename.'.xml"');
+        $doc = new \DOMDocument();
 
+
+        $data = User::find()->select([
+                'id',
+                'username',
+                'email',
+                'status',
+                'first_name',
+                'last_name',
+                'patronymic',
+                'birthday',
+                'city',
+                'photo',
+                'status'
+
+         ]
+        )->all();
+
+        return  $data;
+
+    }
+
+    public function actionImportXml($exclude_password = true)
+    {
+        $model = new XmlImportForm();
+        if (Yii::$app->request->isPost) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+
+            if ($model->file && $model->validate() && $model->upload()) {
+
+                $xmlfile = file_get_contents($model->filePath);
+                $checker = new \DOMDocument();
+                if (!@$checker->load($model->filePath)) {
+                    Yii::$app->session->setFlash('error', 'Данный файл не ялвется валидным .xml документом');
+                    return $this->redirect('index');
+                }
+
+                $xmlob = simplexml_load_string($xmlfile);
+                $xmljson = json_encode($xmlob);
+                $xmlarray = json_decode($xmljson, true);
+                //by default it is
+                $xmlObjectName = key($xmlarray);
+                if ($xmlObjectName === "User") {
+                    $i = 0;
+                    foreach ($xmlarray[$xmlObjectName] as $key => $xmlUser) {
+                        $user = new User();
+                        $user->scenario = User::SCENARIO_IMPORT;
+                        $username = $xmlUser['username'];
+                            if (!empty($username) && is_string($username)) {
+                                if (is_object(User::findByUsername($username))) {
+                                    $i++;
+                                    continue;
+                                }
+                                $user->username = $username;
+                            }
+                            if (!empty($xmlUser['email']) && is_string($xmlUser['email'])) {
+                                if (is_object(User::findByEmail($xmlUser['email']))) {
+                                    $i++;
+                                    continue;
+                                }
+                                $user->username = $username;
+                            }
+
+                            if (!isset($xmlUser['password'])) {
+                                $user->password = '';
+                            }
+
+                            $user->attributes = $xmlUser;
+
+                        try {
+                            if (count($user->attributes()) > 0) {
+                                $user->save(false);
+                            }
+                            if (!$user->save (false)) {
+                                throw new \Exception (implode ( "<br />" , \yii\helpers\ArrayHelper::getColumn ( $user->errors , 0 , false ) ) );
+                            }
+
+                        } Catch(\Exception $e) {
+                            Yii::$app->session->setFlash('error', 'Во время записи данных произошла ошибка. А именно: "<br />'.
+                                implode ( "<br />" , \yii\helpers\ArrayHelper::getColumn ( $user->errors , 0 , false ) ).$e->getMessage()."<br/>");
+                            return $this->redirect('index');
+                        }
+
+                    }
+                } else {
+                    Yii::$app->session->setFlash('error', "Данный тип сущности($xmlObjectName) не совместим для выгрузки с таблицей User. Пожалуйста попробуйте другой файл ");
+                    return $this->redirect('index');
+                }
+            }
+        }
+        if ($i > 0) {
+            Yii::$app->session->setFlash('error', 'Было пропущено '.$i.' '.$xmlObjectName.'. Поскольку были обнаружены дублирующиеся значения аттрибутов.');
+            return $this->redirect('index');
+        }
+        Yii::$app->session->setFlash('success', 'Пользователи были успешно загружены');
+        return $this->redirect('index');
+    }
 
 
 }
