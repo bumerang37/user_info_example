@@ -137,7 +137,7 @@ a.desc:after {
     margin-top: -20px;
 }
 .user-index label#file-name {
-    max-width: 370px;
+    /*max-width: 370px;*/
     font-size: 14px;
     padding: 2px;
     word-break: break-word;
@@ -147,5 +147,9 @@ a.desc:after {
     width: auto;
     overflow: hidden;
     line-height: 16px;
+}
+
+.user-index .create-user, .user-index .export-user {
+    padding: 14px;
 }
 

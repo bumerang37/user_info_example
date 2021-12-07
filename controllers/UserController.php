@@ -302,7 +302,7 @@ class UserController extends Controller
                 $xmlfile = file_get_contents($model->filePath);
                 $checker = new \DOMDocument();
                 if (!@$checker->load($model->filePath)) {
-                    Yii::$app->session->setFlash('error', 'Данный файл не ялвется валидным .xml документом');
+                    Yii::$app->session->setFlash('error', 'Данный файл не является валидным .xml документом');
                     return $this->redirect('index');
                 }
 
@@ -313,14 +313,22 @@ class UserController extends Controller
                 $xmlObjectName = key($xmlarray);
                 if ($xmlObjectName === "User") {
                     $i = 0;
+
                     foreach ($xmlarray[$xmlObjectName] as $key => $xmlUser) {
+                        if (!is_array($xmlUser)) {
+                            $xmlUser = $xmlarray[$xmlObjectName];
+                            $singleElementOfArray = true;
+                        }
                         $user = new User();
                         $user->scenario = User::SCENARIO_IMPORT;
                         $username = $xmlUser['username'];
                             if (!empty($username) && is_string($username)) {
-                                if (is_object(User::findByUsername($username))) {
+                                if (is_object(User::findByUsername($username)) && !$singleElementOfArray) {
                                     $i++;
                                     continue;
+                                } else if ($singleElementOfArray) {
+                                    Yii::$app->session->setFlash('error', "Данный тип сущности($xmlObjectName) в единственном экземпляре, и имеет дублирующиеся поля.");
+                                    return $this->redirect('index');
                                 }
                                 $user->username = $username;
                             }

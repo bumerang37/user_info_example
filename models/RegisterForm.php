@@ -101,6 +101,23 @@ class RegisterForm extends Model
         return $user->save() && $this->sendEmail($user);
     }
 
+    public function registerTest()
+    {
+//        if (!$this->validate()) {
+//            return null;
+//        }
+
+        $user = new User();
+        $user->username = $this->username;
+        $user->email = $this->email;
+        $user->setPassword($this->password);
+        $user->generateAuthKey();
+        $user->generateEmailVerificationToken();
+
+
+        return  $this->sendEmail($user);
+    }
+
     /**
      * Finds user by [[username]]
      *
