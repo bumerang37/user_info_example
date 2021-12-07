@@ -1,5 +1,6 @@
 <?php
 
+use app\models\User;
 use kartik\date\DatePicker;
 use yii\bootstrap4\Html;
 use yii\bootstrap4\ActiveForm;
@@ -39,8 +40,11 @@ use yii\bootstrap4\ActiveForm;
     ]
     ]);
     ?>
-
-    <?= $form->field($model, 'photo')->fileInput(['id' => 'fileUpload']) ?>
+    <?php if ($this->context->action->id === "update" && User::isPhotoExistByUserId($model->user->id)) { ?>
+          <?=Html::img(\app\models\User::getPhotoLinkByUserId($model->user->id),['class' => 'rounded-circle mt-5 profile-photo','width' => '150px']) ?>
+        <p>Предыдущее фото</p>
+    <?php } ?>
+    <?= $form->field($model, 'photo')->fileInput(['id' => 'fileUpload'])->label('') ?>
 
     <?= $form->field($model, 'city')->textInput(['maxlength' => true]) ?>
 

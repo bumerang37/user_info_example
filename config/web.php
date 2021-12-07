@@ -35,6 +35,15 @@ $config = [
             'dateFormat' => 'dd.MM.yyyy',
             'datetimeFormat' => 'dd.MM.yyyy H:i:s',
         ],
+        'response' => [
+            'formatters' => [
+                \yii\web\Response::FORMAT_XML => [
+                    'rootTag' => 'Users',
+                    'contentType' => 'multipart/form-data',
+                    'class' => '\yii\web\XmlResponseFormatter',
+                ]
+            ],
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'r1NzXh2et9E8fkPfjWUwpNijBv4NGXy0',

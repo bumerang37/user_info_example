@@ -101,10 +101,51 @@ a.desc:after {
     font-size: 12px;
 }
 
-.invalid-feedback {
+.edit-profile .invalid-feedback {
     margin-top: 40px;
 }
 
 #fileUpload {
     padding: 20px;
 }
+
+.user-index .btn {
+    margin-right: 20px;
+
+}
+
+.user-index label#file-name {
+    max-width: 350px;
+}
+
+.user-index .invalid-feedback {
+    z-index: 1242324;
+    display: inline-block;
+    text-align: end;
+}
+
+.user-index .custom-file {
+    max-width: 305px;
+    margin-right: 20px;
+}
+
+.user-index .grid-view {
+    margin-top: 50px;
+}
+
+.user-index .invalid-feedback {
+    margin-top: -20px;
+}
+.user-index label#file-name {
+    max-width: 370px;
+    font-size: 14px;
+    padding: 2px;
+    word-break: break-word;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    padding-right: 80px;
+    width: auto;
+    overflow: hidden;
+    line-height: 16px;
+}
+
