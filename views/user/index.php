@@ -18,27 +18,30 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <? if (!Yii::$app->user->isGuest) { ?>
 <!--            <div class="container">-->
-        <div class="btn-toolbar">
+        <div class="row er">
+            <div class="btn-toolbar col-lg-12 col-sm-12">
 
-                <?= Html::a('Создать пользователя', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
-               <?= Html::a('  Выгрузить пользователей в xml', ['user/xml'], ['class' => 'btn btn-primary btn-sm fa fa-save']) ?>
+                    <?= Html::a('Создать пользователя', ['create'], ['class' => 'create-user btn btn-success btn-sm col-sm-6 col-lg-2']) ?>
+                   <?= Html::a('  Выгрузить пользователей в xml', ['user/xml'], ['class' => 'export-user btn btn-primary btn-sm fa fa-save ']) ?>
 
-                <div class="form-block">
-                <?php $form = ActiveForm::begin(['id' => 'form-xml-import',
-                    'action' => \yii\helpers\Url::to(['user/import-xml']),
-                    'options' => ['enctype' => 'multipart/form-data',
-                        'class' => 'form-inline']
-                ]); ?>
+                    <div class="form-block col-lg-7">
+                    <?php $form = ActiveForm::begin(['id' => 'form-xml-import',
+                        'action' => \yii\helpers\Url::to(['user/import-xml']),
+                        'options' => ['enctype' => 'multipart/form-data',
+                            'class' => 'form-inline']
+                    ]); ?>
 
-                <?= Html::submitButton('  Загрузить пользователей из xml ',
-                    ['class' => 'btn btn-secondary btn-sm fa fa-arrow-up float-right', 'name' => 'saveProfile-button'])
-                ?>
-                    <div class="custom-file d-block form-group border">
-                        <?= $form->field($model, 'file')->fileInput(['class' => 'custom-file-input', 'id' => 'fileUpload'])->label('') ?>
-                        <label id="file-name" class="custom-file-label" for="fileUpload">Выберите xml файл для импорта</label>
+                    <?= Html::submitButton('  Загрузить пользователей из xml ',
+                        ['class' => 'load-user btn btn-secondary btn-sm fa fa-arrow-up col-lg-3 col-sm-4', 'name' => 'saveProfile-button'])
+                    ?>
+                        <div class="custom-file d-block form-group border">
+                            <?= $form->field($model, 'file')->fileInput(['class' => 'custom-file-input', 'id' => 'fileUpload'])->label('') ?>
+                            <label id="file-name" class="custom-file-label" for="fileUpload" >Выберите xml файл для импорта</label>
+                        </div>
+                    <?php ActiveForm::end() ?>
                     </div>
-                <?php ActiveForm::end() ?>
-                </div>
+            </div>
+        </div>
 
     <?php } ?>
 
@@ -48,7 +51,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'options' => ['class' => ''],
+        'tableOptions' => [
+            'class' => 'table table-striped table-bordered table-responsive'
+        ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -89,7 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]
             ],
         ],
-    ]); ?>
+    ],['class' => 'grid-view col-lg-12 col-sm-12 col-md-12 table-responsive']); ?>
 
 <!--    --><?php //Pjax::end(); ?>
 

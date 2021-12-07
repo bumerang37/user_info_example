@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\PasswordResetRequestForm;
+use app\models\RegisterForm;
 use app\models\ResetPasswordForm;
 use app\models\VerifyEmailForm;
 use InvalidArgumentException;
@@ -201,6 +202,19 @@ class SiteController extends Controller
         }
 
         return $this->render('resetPassword', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionTest()
+    {
+        $model = new RegisterForm();
+        if ($model->load(Yii::$app->request->post()) && $model->registerTest()) {
+            Yii::$app->session->setFlash('success', 'Спасибо за регистрацию. Пожалуйста проверьте входящие письма в вашей почте.');
+            return $this->goHome();
+        }
+
+        return $this->render('../user/register1', [
             'model' => $model,
         ]);
     }

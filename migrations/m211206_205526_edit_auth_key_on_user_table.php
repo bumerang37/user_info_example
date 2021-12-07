@@ -13,7 +13,7 @@ class m211206_205526_edit_auth_key_on_user_table extends Migration
     public function safeUp()
     {
         $this->alterColumn('{{%user}}', 'auth_key', $this->string(32)->null()->comment('Ключ аутентификации cookies'));
-    // 'auth_key' => $this->string(32)->notNull()->comment('Ключ аутентификации cookies'),
+
 
     }
 
@@ -22,7 +22,8 @@ class m211206_205526_edit_auth_key_on_user_table extends Migration
      */
     public function safeDown()
     {
-        $this->alterColumn('{{%user}}', 'auth_key', $this->string(32)->notNull()->comment('Ключ аутентификации cookies'));
+//        $this->alterColumn('{{%user}}', 'auth_key', $this->string(32)->notNull()->comment('Ключ аутентификации cookies'));
+        echo "m211206_205526_edit_auth_key_on_user_table cannot be reverted.\n";
 
     }
 
