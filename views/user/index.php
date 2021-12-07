@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'tableOptions' => [
-            'class' => 'table table-striped table-bordered table-responsive'
+            'class' => 'table table-striped table-bordered table-responsive users-table'
         ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
